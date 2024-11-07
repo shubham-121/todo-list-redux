@@ -1,4 +1,7 @@
+import { useState } from "react";
 import "./App.css";
+import { useDispatch } from "react-redux";
+import { createNote } from "./features";
 
 const todo_tasks = [
   {
@@ -41,15 +44,66 @@ export default function App() {
 }
 
 function Header() {
+  const dispatch = useDispatch();
+
+  const [newNote, setNewNote] = useState("");
+  const [noteClick, setNoteClick] = useState(false);
+
+  function handleNote() {
+    setNoteClick(!noteClick);
+  }
+
   return (
     <>
-      {" "}
-      <button className="new-note">Create New</button>
-      {/* <button className="new-note">Create New</button> */}
+      <button onClick={handleNote} className="new-note">
+        Create New
+      </button>
+
+      {noteClick && (
+        <>
+          <button onClick={handleNote} className="close-btn">
+            X
+          </button>
+          <CreateNote />
+        </>
+      )}
+
       <div className="header">
         <p>ToDo List App</p>
       </div>
     </>
+  );
+}
+
+function CreateNote() {
+  const [noteText, setNoteText] = useState("");
+  const [submit, setSubmit] = useState(false);
+
+  function handleCreateNote(e) {
+    setNoteText(e.target.value);
+  }
+
+  function handleSubmitNote() {}
+
+  return (
+    <div className="create-note">
+      <input
+        className="input-txt"
+        value={noteText}
+        onChange={handleCreateNote}
+        type="text"
+        placeholder="Enter the note"
+      ></input>
+      <span>Status</span>
+      <select className="select">
+        <option>Completed</option>
+        <option>Pending</option>
+        <option>Later</option>
+      </select>
+      <button onClick={handleSubmitNote} className="btn">
+        Create
+      </button>
+    </div>
   );
 }
 
@@ -79,14 +133,32 @@ function DisplayToDoList() {
   );
 }
 
-function RenderToDo({ id, taskname, status, edit, remove }) {
+function RenderToDo({ id, taskname, edit, remove }) {
+  const [status, setStatus] = useState("");
+  const [isEditClicked, setIsEditClicked] = useState(false);
+  const [isEdit, setIsEdit] = useState("");
+
+  function handleStatus(e) {
+    console.log(e.target.value);
+    setStatus(e.target.value);
+  }
+
+  function handleEditClicked(prev) {}
+
   return (
     <div className="render-todo">
       <input type="checkbox"></input>
       <p>{id}</p>
       <p>{taskname}</p>
-      <button id="status">{status}</button>
-      <button>{edit}</button>
+
+      <select id="status" value={status} onChange={handleStatus}>
+        <option value={"pending"}>Pending</option>
+        <option value={"complete"}>Completed</option>
+        <option value={"later"}>Later</option>
+      </select>
+      <button value={isEditClicked} onChange={handleEditClicked}>
+        {edit}
+      </button>
 
       <button>{remove}</button>
     </div>
