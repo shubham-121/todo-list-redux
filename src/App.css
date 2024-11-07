@@ -1,0 +1,177 @@
+/* * {
+  margin: 2px;
+  padding: 2px;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+}
+.header {
+  border: 2px solid black;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 800;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-style: oblique;
+  text-shadow: 10px 8px 15px gray;
+}
+
+.todo-heading {
+  display: flex;
+  flex-direction: row;
+  border: 2px solid black;
+  justify-content: space-between;
+  min-height: 2vh;
+  text-decoration: underline;
+}
+.headers {
+  border: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  width: 10vw;
+  text-align: center;
+  justify-content: center;
+}
+
+.todo-container {
+  border: 2px solid black;
+  min-height: 60vh;
+  min-width: 50vw;
+}
+
+.render-todo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+} */
+/* App container styling */
+.app {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 21px auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 54px 30px 25px rgba(0, 0, 0, 0.2);
+  border: 2px solid black;
+}
+
+/* Header styling */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  color: #333;
+}
+
+.todo-container {
+  width: 100%;
+}
+
+/* Heading Row styling */
+.todo-heading {
+  display: flex;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.headers {
+  flex: 1;
+  text-align: center;
+}
+
+.line {
+  width: 1px;
+  height: 25px;
+  background-color: white;
+  margin: 0 5px;
+}
+
+/* Task Item styling */
+ol {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.render-todo {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #ffffff;
+  margin-bottom: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.render-todo:hover {
+  background-color: #f1f1f1;
+}
+
+.render-todo p {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+}
+
+/* Button styling for Edit and Remove */
+.render-todo button {
+  padding: 6px 12px;
+  margin-left: 84px;
+  font-size: 0.9em;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.render-todo button:first-of-type {
+  background-color: #28a745; /* Edit button: green */
+}
+
+.render-todo button:first-of-type:hover {
+  background-color: #218838;
+}
+
+.render-todo button:last-of-type {
+  background-color: #dc3545; /* Remove button: red */
+}
+
+.render-todo button:last-of-type:hover {
+  background-color: #c82333;
+}
+
+#status {
+  margin-left: 31px;
+  border: 2px solid black;
+  width: 85px;
+  border-radius: 29px;
+  background-color: gray;
+  color: beige;
+  text-align: center;
+}
+
+.new-note {
+  left: 80%;
+  position: relative;
+  width: 5vw;
+  border-radius: 17px;
+  font-weight: 700;
+  font-size: 14px;
+  background-color: gray;
+  border: 3px solid black;
+}
+
+.new-note:hover {
+  transform: scale(1.2);
+  box-shadow: 2px 5px 10px rgb(60, 59, 59);
+}
