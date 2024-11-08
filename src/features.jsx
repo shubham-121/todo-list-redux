@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isChecked: false,
   delete: false,
-  isEdit: false,
+  isEditClicked: false,
   edit: "",
   status: "",
   notesArray: [],
@@ -51,13 +51,22 @@ const featureSlice = createSlice({
       },
     },
 
+    toggleEditModal(state) {
+      state.isEditClicked = !state.isEditClicked;
+    },
+
     editNote(state, action) {},
 
     deleteNote(state, action) {},
   },
 });
 
-export const { createNote, editNote, deleteNote, toggleCreateNote } =
-  featureSlice.actions;
+export const {
+  createNote,
+  editNote,
+  deleteNote,
+  toggleCreateNote,
+  toggleEditModal,
+} = featureSlice.actions;
 
 export default featureSlice.reducer;

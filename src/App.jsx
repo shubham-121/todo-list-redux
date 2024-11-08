@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createNote, toggleCreateNote, editNote, deleteNote } from "./features";
+import {
+  createNote,
+  toggleCreateNote,
+  editNote,
+  deleteNote,
+  toggleEditModal,
+} from "./features";
 
 const todo_tasks = [
   {
@@ -11,13 +17,13 @@ const todo_tasks = [
     edit: "✏️",
     remove: "🗑️",
   },
-  {
-    key: 2,
-    taskname: "Book flight tickets today",
-    status: "complete",
-    edit: "✏️",
-    remove: "🗑️",
-  },
+  // {
+  //   key: 2,
+  //   taskname: "Book flight tickets today",
+  //   status: "complete",
+  //   edit: "✏️",
+  //   remove: "🗑️",
+  // },
 ];
 
 export default function App() {
@@ -152,8 +158,11 @@ function DisplayToDoList() {
 
 function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
   const [status, setStatus] = useState("");
-  const [isEditClicked, setIsEditClicked] = useState(false);
-  const [isEdit, setIsEdit] = useState("");
+  // const [isEditClicked, setIsEditClicked] = useState(false);
+  // const [isEdit, setIsEdit] = useState("");
+
+  const dispatch = useDispatch();
+  const { isEditClicked } = useSelector((store) => store.features);
 
   useEffect(() => {
     setStatus(noteStatus);
@@ -164,7 +173,9 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
     setStatus(e.target.value);
   }
 
-  function handleEditClicked(prev) {}
+  function handleEditClicked(prev) {
+    dispatch(toggleEditModal());
+  }
 
   return (
     <div className="render-todo">
@@ -178,11 +189,35 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
         <option value={"complete"}>Completed</option>
         <option value={"later"}>Later</option>
       </select>
-      <button value={isEditClicked} onChange={handleEditClicked}>
+      <button value={isEditClicked} onClick={handleEditClicked}>
         {edit}
       </button>
 
       <button>{remove}</button>
+
+      {isEditClicked && <EditModal></EditModal>}
+    </div>
+  );
+}
+
+function EditModal() {
+  console.log("modal opened");
+  return (
+    <div className="edit-modal">
+      <button className="edit-closebtn ">X</button>
+      <div className="edit-modal-2">
+        <input
+          className="input-txt"
+          type="text"
+          placeholder="Enter new text"
+        ></input>
+        <select>
+          <option>Pending</option>
+          <option>Finished</option>
+          <option>Later</option>
+        </select>
+      </div>
+      <button id="submit-btn-editnote">Submit</button>
     </div>
   );
 }
