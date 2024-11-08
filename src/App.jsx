@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createNote,
-  editNote,
-  deleteNote,
-  toggleNoteClick,
-  updateNoteStatus,
-} from "./features";
+import { createNote, toggleCreateNote, editNote, deleteNote } from "./features";
 
 const todo_tasks = [
   {
@@ -24,20 +18,6 @@ const todo_tasks = [
     edit: "✏️",
     remove: "🗑️",
   },
-  {
-    key: 3,
-    taskname: "Get the medications",
-    status: "pending",
-    edit: "✏️",
-    remove: "🗑️",
-  },
-  {
-    key: 4,
-    taskname: "Join the gym today",
-    status: "pending",
-    edit: "✏️",
-    remove: "🗑️",
-  },
 ];
 
 export default function App() {
@@ -51,25 +31,23 @@ export default function App() {
 
 function Header() {
   const dispatch = useDispatch();
-
-  const noteClick = useSelector((store) => store.features.noteClick);
+  const { createNoteClick } = useSelector((store) => store.features);
 
   const [newNote, setNewNote] = useState("");
-  // const [noteClick, setNoteClick] = useState(false);
 
-  function handleNoteClick() {
-    dispatch(toggleNoteClick());
+  function handleNote() {
+    dispatch(toggleCreateNote());
   }
 
   return (
     <>
-      <button onClick={handleNoteClick} className="new-note">
+      <button onClick={handleNote} className="new-note">
         Create New
       </button>
 
-      {noteClick && (
+      {createNoteClick && (
         <>
-          <button onClick={handleNoteClick} className="close-btn">
+          <button onClick={handleNote} className="close-btn">
             X
           </button>
           <CreateNote />
@@ -85,21 +63,24 @@ function Header() {
 
 function CreateNote() {
   const dispatch = useDispatch();
+  const { createNoteClick } = useSelector((store) => store.features);
 
   const [noteText, setNoteText] = useState("");
-  const [submit, setSubmit] = useState(false);
-  const [status, setStatus] = useState("");
+  const [noteStatus, setNoteStatus] = useState("");
 
   function handleCreateNote(e) {
     setNoteText(e.target.value);
   }
-  function handleStatus(e) {
-    setStatus(e.target.value);
+
+  function handleNoteStatus(e) {
+    setNoteStatus(e.target.value);
+    console.log(e.target.value);
   }
 
   function handleSubmitNote() {
-    dispatch(createNote({ noteText, status }));
-    dispatch(toggleNoteClick());
+    console.log("data sent:", noteText, noteStatus);
+    dispatch(createNote(noteText, noteStatus));
+    dispatch(toggleCreateNote());
   }
 
   return (
@@ -112,7 +93,7 @@ function CreateNote() {
         placeholder="Enter the note"
       ></input>
       <span>Status</span>
-      <select value={status} className="select" onChange={handleStatus}>
+      <select value={noteStatus} onChange={handleNoteStatus} className="select">
         <option>Completed</option>
         <option>Pending</option>
         <option>Later</option>
@@ -125,8 +106,9 @@ function CreateNote() {
 }
 
 function DisplayToDoList() {
-  const notesArray = useSelector((store) => store.features.notesArray);
-  if (notesArray.length > 0) console.log(notesArray);
+  const dispatch = useDispatch();
+  const { notesArray } = useSelector((store) => store.features);
+  console.log(notesArray);
 
   return (
     <div className="todo-container">
@@ -138,52 +120,68 @@ function DisplayToDoList() {
         <p className="headers">Remove</p> <hr className="line"></hr>
       </div>
       <ol>
-        {/* {todo_tasks.map((task, idx) => (
+        {/* correct code below */}
+        {/* {notesArray.map((note, idx) => (
           <RenderToDo
-            key={task.key}
-            id={task.key}
-            taskname={task.taskname}
-            status={task.status}
-            edit={task.edit}
-            remove={task.remove}
-          ></RenderToDo>
-        ))} */}
-        {notesArray.map((note, idx) => (
-          <RenderToDo
-            key={note.id}
-            // id={note.id}
-            id={idx + 1}
-            taskname={note.taskname.noteText}
-            noteStatus={note.taskname.status}
+            key={idx}
+            index={idx}
+            id={note.id}
+            taskName={note.taskName}
+            noteStatus={note.status}
             edit={note.edit}
             remove={note.remove}
-          />
+          ></RenderToDo>
+        ))} */}
+
+        {/* for testing purpose only */}
+        {todo_tasks.map((note, idx) => (
+          <RenderToDo
+            key={idx}
+            index={idx}
+            id={note.id}
+            taskName={note.taskName}
+            noteStatus={note.status}
+            edit={note.edit}
+            remove={note.remove}
+          ></RenderToDo>
         ))}
       </ol>
     </div>
   );
 }
 
-function RenderToDo({ id, taskname, noteStatus, edit, remove }) {
-  const dispatch = useDispatch();
+function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
+  const [status, setStatus] = useState("");
+  const [isEditClicked, setIsEditClicked] = useState(false);
+  const [isEdit, setIsEdit] = useState("");
+
+  useEffect(() => {
+    setStatus(noteStatus);
+  }, [noteStatus]);
 
   function handleStatus(e) {
-    const newStatus = e.target.value;
-    dispatch(updateNoteStatus({ id, newStatus })); // Dispatch the new status to Redux
+    console.log(e.target.value);
+    setStatus(e.target.value);
   }
+
+  function handleEditClicked(prev) {}
 
   return (
     <div className="render-todo">
       <input type="checkbox"></input>
-      <p>{id}</p>
-      <p>{taskname}</p>
+      <p>{index + 1}</p>
+      {/* <p>{taskName}</p>        correct hai delte below one */}
+      <p>Buy a car</p>
 
-      <select id="status" value={noteStatus} onChange={handleStatus}>
-        <option value="pending">Pending</option>
-        <option value="complete">Completed</option>
-        <option value="later">Later</option>
+      <select id="status" value={status} onChange={handleStatus}>
+        <option value={"pending"}>Pending</option>
+        <option value={"complete"}>Completed</option>
+        <option value={"later"}>Later</option>
       </select>
-      <button>{edit}</button>
+      <button value={isEditClicked} onChange={handleEditClicked}>
+        {edit}
+      </button>
+
       <button>{remove}</button>
     </div>
   );

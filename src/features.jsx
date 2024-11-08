@@ -2,76 +2,62 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isChecked: false,
-  isdelete: false,
+  delete: false,
+  isEdit: false,
   edit: "",
   status: "",
-  noteClick: false,
-  notesArray: [
-    {
-      // id: Date.now(),
-      id: "",
-      taskname: "Book appointment",
-      status: "",
-      edit: "✏️",
-      remove: "🗑️",
-    },
-  ],
+  notesArray: [],
+  createNoteClick: false,
 };
+
+// {
+//     key: 1,
+//     taskname: "Eat breakfast",
+//     status: "pending",
+//     edit: "✏️",
+//     remove: "🗑️",
+//   },
 
 const featureSlice = createSlice({
   name: "features",
   initialState,
   reducers: {
-    toggleNoteClick(state) {
-      state.noteClick = !state.noteClick;
+    toggleCreateNote(state) {
+      state.createNoteClick = !state.createNoteClick;
     },
 
     createNote: {
-      prepare(noteText, status) {
+      prepare(noteText, noteStatus) {
         return {
-          payload: {
-            id: Date.now(),
-            taskname: noteText,
-            status: status,
-            edit: "✏️", //default value
-            remove: "🗑️", //default value
-          },
+          payload: { noteText, noteStatus },
         };
       },
 
       reducer(state, action) {
-        console.log("Before update:", action.payload);
-        state.notesArray.push(action.payload);
-        console.log("after update:", state);
+        const noteText = action.payload.noteText;
+        const noteStatus = action.payload.noteStatus;
+        console.log("Before update, note array->", state.notesArray);
+
+        state.notesArray.push({
+          id: Date.now(),
+          taskName: noteText,
+          status: noteStatus,
+          edit: "✏️",
+          remove: "🗑️",
+        });
+
+        // console.log("New note data:", noteText,noteStatus);
+        console.log("After update, note array->", state.notesArray);
       },
     },
 
-    updateNoteStatus: {
-      reducer(state, action) {
-        console.log("Action reached and data", action.payload);
-
-        const { id, newStatus } = action.payload;
-        console.log(id, newStatus);
-
-        const note = state.notesArray.find((note) => note.id === id);
-        if (note) {
-          console.log("note found updating status");
-          note.status = newStatus;
-        } else console.log("Not found");
-      },
-    },
     editNote(state, action) {},
 
     deleteNote(state, action) {},
   },
 });
 
-export const {
-  createNote,
-  editNote,
-  deleteNote,
-  toggleNoteClick,
-  updateNoteStatus,
-} = featureSlice.actions;
+export const { createNote, editNote, deleteNote, toggleCreateNote } =
+  featureSlice.actions;
 
 export default featureSlice.reducer;

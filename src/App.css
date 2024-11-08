@@ -47,6 +47,10 @@
   justify-content: space-around;
 } */
 /* App container styling */
+
+body {
+  background-color: rgb(113, 113, 106);
+}
 .app {
   font-family: Arial, sans-serif;
   max-width: 600px;
@@ -253,4 +257,32 @@ ol {
   top: 43%;
   right: 31%;
   background-color: lightblue;
+}
+
+.edit-note {
+  position: fixed;
+  z-index: 2000;
+  border: 2px solid black;
+  height: 30vh;
+  width: 40vw;
+  background-color: beige;
+  left: 30%;
+  top: 20%;
+
+  border-radius: 40px;
+}
+
+#edit-closebtn {
+  position: relative;
+  left: 76%;
+  top: 5%;
+}
+
+.edit-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: space-between;
+  gap: 20px;
 }
