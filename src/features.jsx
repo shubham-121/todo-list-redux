@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  id: "",
   isChecked: false,
   delete: false,
   isEditClicked: false,
@@ -8,6 +9,8 @@ const initialState = {
   status: "",
   notesArray: [],
   createNoteClick: false,
+  editSubmit: false,
+  updateNotif: false, //note update notification
 };
 
 // {
@@ -55,7 +58,35 @@ const featureSlice = createSlice({
       state.isEditClicked = !state.isEditClicked;
     },
 
-    editNote(state, action) {},
+    editNote: {
+      prepare(editNotetext, editStatus, uniqueId) {
+        return {
+          payload: { editNotetext, editStatus, uniqueId },
+        };
+      },
+      reducer(state, action) {
+        console.log("Edit data reached", action.payload);
+        const { editNotetext, editStatus, uniqueId } = action.payload;
+        const noteToUpdate = state.notesArray.find(
+          (note) => note.id === uniqueId
+        );
+        if (noteToUpdate) console.log("Note found", uniqueId);
+        else alert("Problem in editing the note!");
+
+        noteToUpdate.taskName = editNotetext;
+        noteToUpdate.status = editStatus;
+        noteToUpdate.id = uniqueId;
+
+        console.log("Update successfully the note data");
+      },
+    },
+    updateNotification(state) {
+      state.updateNotif = true;
+    },
+
+    clearUpdateNotification(state) {
+      state.updateNotif = false;
+    },
 
     deleteNote(state, action) {},
   },
@@ -67,6 +98,8 @@ export const {
   deleteNote,
   toggleCreateNote,
   toggleEditModal,
+  updateNotification,
+  clearUpdateNotification,
 } = featureSlice.actions;
 
 export default featureSlice.reducer;

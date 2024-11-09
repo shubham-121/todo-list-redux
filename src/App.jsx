@@ -7,6 +7,8 @@ import {
   editNote,
   deleteNote,
   toggleEditModal,
+  updateNotification,
+  clearUpdateNotification,
 } from "./features";
 
 const todo_tasks = [
@@ -127,20 +129,7 @@ function DisplayToDoList() {
       </div>
       <ol>
         {/* correct code below */}
-        {/* {notesArray.map((note, idx) => (
-          <RenderToDo
-            key={idx}
-            index={idx}
-            id={note.id}
-            taskName={note.taskName}
-            noteStatus={note.status}
-            edit={note.edit}
-            remove={note.remove}
-          ></RenderToDo>
-        ))} */}
-
-        {/* for testing purpose only */}
-        {todo_tasks.map((note, idx) => (
+        {notesArray.map((note, idx) => (
           <RenderToDo
             key={idx}
             index={idx}
@@ -151,6 +140,19 @@ function DisplayToDoList() {
             remove={note.remove}
           ></RenderToDo>
         ))}
+
+        {/* for testing purpose only */}
+        {/* {todo_tasks.map((note, idx) => (
+          <RenderToDo
+            key={idx}
+            index={idx}
+            id={note.id}
+            taskName={note.taskName}
+            noteStatus={note.status}
+            edit={note.edit}
+            remove={note.remove}
+          ></RenderToDo>
+        ))} */}
       </ol>
     </div>
   );
@@ -158,11 +160,12 @@ function DisplayToDoList() {
 
 function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
   const [status, setStatus] = useState("");
+  const [checkbox, setCheckbox] = useState(false);
   // const [isEditClicked, setIsEditClicked] = useState(false);
   // const [isEdit, setIsEdit] = useState("");
 
   const dispatch = useDispatch();
-  const { isEditClicked } = useSelector((store) => store.features);
+  const { isEditClicked, updateNotif } = useSelector((store) => store.features);
 
   useEffect(() => {
     setStatus(noteStatus);
@@ -177,13 +180,18 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
     dispatch(toggleEditModal());
   }
 
+  function handleCheckbox(e) {
+    console.log("Checkbox clicked", !checkbox);
+    setCheckbox(!checkbox);
+  }
+
   return (
     <div className="render-todo">
-      <input type="checkbox"></input>
+      <input type="checkbox" value={checkbox} onChange={handleCheckbox}></input>
       <p>{index + 1}</p>
-      {/* <p>{taskName}</p>        correct hai delte below one */}
-      <p>Buy a car</p>
-
+      {/* correct hai delte below one */}
+      <p>{taskName}</p>
+      {/* <p>Buy a car</p> */}
       <select id="status" value={status} onChange={handleStatus}>
         <option value={"pending"}>Pending</option>
         <option value={"complete"}>Completed</option>
@@ -192,32 +200,91 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
       <button value={isEditClicked} onClick={handleEditClicked}>
         {edit}
       </button>
-
       <button>{remove}</button>
-
-      {isEditClicked && <EditModal></EditModal>}
+      {isEditClicked && <EditModal uniqueId={id}></EditModal>}
+      {/* {updateNotif && <UpdateNotification></UpdateNotification>} */}
     </div>
   );
 }
 
-function EditModal() {
-  console.log("modal opened");
+function EditModal({ uniqueId }) {
+  const dispatch = useDispatch();
+  const { notesArray, id, updateNotif } = useSelector(
+    (store) => store.features
+  );
+  console.log(notesArray, id);
+
+  const [editNotetext, setEditNoteText] = useState("");
+  const [editStatus, setEditStatus] = useState("");
+
+  function handleEditClicked(prev) {
+    dispatch(toggleEditModal());
+  }
+
+  function handleEditNote(e) {
+    setEditNoteText(e.target.value);
+  }
+
+  function handleEditStatus(e) {
+    setEditStatus(e.target.value);
+  }
+
+  function handleEditSubmit() {
+    console.log(editNotetext, editStatus, uniqueId);
+    dispatch(editNote(editNotetext, editStatus, uniqueId));
+    dispatch(toggleEditModal());
+    dispatch(updateNotification());
+  }
+
   return (
     <div className="edit-modal">
-      <button className="edit-closebtn ">X</button>
+      <button className="edit-closebtn " onClick={handleEditClicked}>
+        X
+      </button>
       <div className="edit-modal-2">
         <input
+          value={editNotetext}
+          onChange={handleEditNote}
           className="input-txt"
           type="text"
           placeholder="Enter new text"
         ></input>
-        <select>
+        <select value={editStatus} onChange={handleEditStatus}>
           <option>Pending</option>
           <option>Finished</option>
           <option>Later</option>
         </select>
       </div>
-      <button id="submit-btn-editnote">Submit</button>
+      <button id="submit-btn-editnote" onClick={handleEditSubmit}>
+        Submit
+      </button>
+      {updateNotif && <UpdateNotification></UpdateNotification>}
     </div>
   );
 }
+
+function UpdateNotification() {
+  const dispatch = useDispatch();
+  const { notesArray, id, updateNotif } = useSelector(
+    (store) => store.features
+  );
+
+  useEffect(() => {
+    if (updateNotif) {
+      const timer = setTimeout(() => {
+        console.log("timer");
+        dispatch(clearUpdateNotification());
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [updateNotif, dispatch]);
+
+  return (
+    <div className="update-notif">
+      <p>Note Updated!</p>
+    </div>
+  );
+}
+
+//continue with adding the update note functionality to the app
