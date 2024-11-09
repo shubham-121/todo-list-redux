@@ -11,6 +11,15 @@ import {
   clearUpdateNotification,
 } from "./features";
 
+import {
+  toggleDark,
+  sortNotes,
+  sortAlphabetically,
+  sortCompleted,
+  sortNewest,
+  sortOldest,
+} from "./uiFeatures";
+
 const todo_tasks = [
   {
     key: 1,
@@ -28,9 +37,15 @@ const todo_tasks = [
   // },
 ];
 
+// <div  className={`render-todo ${status === "complete" ? "line-through" : ""}`}
+// >
+
 export default function App() {
+  const dispatch = useDispatch();
+  const { isDark } = useSelector((store) => store.UI);
+
   return (
-    <div className="app">
+    <div className={`app ${isDark ? "toggleDark" : ""}`}>
       <Header></Header>
       <DisplayToDoList></DisplayToDoList>
     </div>
@@ -39,12 +54,31 @@ export default function App() {
 
 function Header() {
   const dispatch = useDispatch();
-  const { createNoteClick } = useSelector((store) => store.features);
+  const { createNoteClick, notesArray } = useSelector(
+    (store) => store.features
+  );
+  const { isDark } = useSelector((store) => store.UI);
 
   const [newNote, setNewNote] = useState("");
+  const [sortType, setSortType] = useState("");
 
   function handleNote() {
     dispatch(toggleCreateNote());
+  }
+
+  function handleDarkMode() {
+    dispatch(toggleDark());
+  }
+
+  //sort logic
+  function handleSort(e) {
+    setSortType(e.target.value);
+    const sort = e.target.value;
+
+    if (sort === "sortAlphabetically") dispatch(sortAlphabetically(notesArray));
+    else if (sort === "sortCompleted") dispatch(sortCompleted(notesArray));
+    else if (sort === "sortNewest") dispatch(sortNewest(notesArray));
+    else if (sort === "sortOldest") dispatch(sortOldest(notesArray));
   }
 
   return (
@@ -52,6 +86,20 @@ function Header() {
       <button onClick={handleNote} className="new-note">
         Create New
       </button>
+
+      <button
+        onClick={handleDarkMode}
+        className={`dark-mode ${isDark ? "dark-mode-btn" : ""}`}
+      ></button>
+
+      {/* prettier-ignore */}
+      <select defaultValue="sort" className="sort-btn" onChange={handleSort}>
+        <option value="sort" disabled> Sort </option>
+        <option value="sortAlphabetically">Alphabetically</option>
+        <option value="sortCompleted">Completed </option>
+        <option value="sortNewest">Newest </option>
+        <option value="sortOldest">Oldest </option>
+      </select>
 
       {createNoteClick && (
         <>
@@ -116,6 +164,8 @@ function CreateNote() {
 function DisplayToDoList() {
   const dispatch = useDispatch();
   const { notesArray } = useSelector((store) => store.features);
+  const { sortedNotes } = useSelector((store) => store.UI);
+  console.log("Sorted data", sortedNotes);
   console.log(notesArray);
 
   return (
@@ -129,30 +179,30 @@ function DisplayToDoList() {
       </div>
       <ol>
         {/* correct code below */}
-        {notesArray.map((note, idx) => (
-          <RenderToDo
-            key={idx}
-            index={idx}
-            id={note.id}
-            taskName={note.taskName}
-            noteStatus={note.status}
-            edit={note.edit}
-            remove={note.remove}
-          ></RenderToDo>
-        ))}
 
-        {/* for testing purpose only */}
-        {/* {todo_tasks.map((note, idx) => (
-          <RenderToDo
-            key={idx}
-            index={idx}
-            id={note.id}
-            taskName={note.taskName}
-            noteStatus={note.status}
-            edit={note.edit}
-            remove={note.remove}
-          ></RenderToDo>
-        ))} */}
+        {sortedNotes.length > 0
+          ? sortedNotes.map((note, idx) => (
+              <RenderToDo
+                key={idx}
+                index={idx}
+                id={note.id}
+                taskName={note.taskName}
+                noteStatus={note.status}
+                edit={note.edit}
+                remove={note.remove}
+              ></RenderToDo>
+            ))
+          : notesArray.map((note, idx) => (
+              <RenderToDo
+                key={idx}
+                index={idx}
+                id={note.id}
+                taskName={note.taskName}
+                noteStatus={note.status}
+                edit={note.edit}
+                remove={note.remove}
+              ></RenderToDo>
+            ))}
       </ol>
     </div>
   );
@@ -301,3 +351,11 @@ function UpdateNotification() {
 }
 
 //continue with adding the update note functionality to the app
+
+function DarkMode() {
+  return (
+    <div>
+      <p>Dark mode</p>
+    </div>
+  );
+}

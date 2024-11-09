@@ -42,6 +42,10 @@ const featureSlice = createSlice({
         const noteText = action.payload.noteText;
         const noteStatus = action.payload.noteStatus;
         console.log("Before update, note array->", state.notesArray);
+        if (!noteText) {
+          alert("Enter a valid note first");
+          return;
+        }
 
         state.notesArray.push({
           id: Date.now(),
