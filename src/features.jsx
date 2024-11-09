@@ -4,7 +4,9 @@ const initialState = {
   id: "",
   isChecked: false,
   delete: false,
-  isEditClicked: false,
+  // isEditClicked: false,
+  editId: "",
+
   edit: "",
   status: "",
   notesArray: [],
@@ -54,31 +56,34 @@ const featureSlice = createSlice({
       },
     },
 
-    toggleEditModal(state) {
-      state.isEditClicked = !state.isEditClicked;
-    },
+    // toggleEditModal(state) {
+    //   state.isEditClicked = !state.isEditClicked;
+    // },
 
-    editNote: {
-      prepare(editNotetext, editStatus, uniqueId) {
-        return {
-          payload: { editNotetext, editStatus, uniqueId },
-        };
-      },
-      reducer(state, action) {
-        console.log("Edit data reached", action.payload);
-        const { editNotetext, editStatus, uniqueId } = action.payload;
-        const noteToUpdate = state.notesArray.find(
-          (note) => note.id === uniqueId
-        );
-        if (noteToUpdate) console.log("Note found", uniqueId);
-        else alert("Problem in editing the note!");
+    // editNote: {
+    //   prepare(editNotetext, editStatus, uniqueId) {
+    //     return {
+    //       payload: { editNotetext, editStatus, uniqueId },
+    //     };
+    //   },
+    //   reducer(state, action) {
+    //     console.log("Edit data reached", action.payload);
+    //     const { editNotetext, editStatus, uniqueId } = action.payload;
+    //     const noteToUpdate = state.notesArray.find(
+    //       (note) => note.id === uniqueId
+    //     );
+    //     if (noteToUpdate) console.log("Note found", uniqueId);
+    //     else alert("Problem in editing the note!");
 
-        noteToUpdate.taskName = editNotetext;
-        noteToUpdate.status = editStatus;
-        noteToUpdate.id = uniqueId;
+    //     noteToUpdate.taskName = editNotetext;
+    //     noteToUpdate.status = editStatus;
+    //     noteToUpdate.id = uniqueId;
 
-        console.log("Update successfully the note data");
-      },
+    //     console.log("Update successfully the note data");
+    //   },
+    // },
+    toggleEditModal(state, action) {
+      state.editId = action.payload;
     },
     updateNotification(state) {
       state.updateNotif = true;
@@ -88,7 +93,16 @@ const featureSlice = createSlice({
       state.updateNotif = false;
     },
 
-    deleteNote(state, action) {},
+    deleteNote(state, action) {
+      const deleteId = action.payload;
+      console.log(deleteId);
+      const noteToDelete = state.notesArray.find((note) => note.id == deleteId);
+      if (noteToDelete) console.log("delete note found");
+      else console.log("Not found");
+
+      state.notesArray = state.notesArray.filter((note) => note.id != deleteId);
+      console.log(state.notesArray);
+    },
   },
 });
 

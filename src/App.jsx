@@ -159,17 +159,21 @@ function DisplayToDoList() {
 }
 
 function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("pending");
   const [checkbox, setCheckbox] = useState(false);
   // const [isEditClicked, setIsEditClicked] = useState(false);
   // const [isEdit, setIsEdit] = useState("");
 
   const dispatch = useDispatch();
-  const { isEditClicked, updateNotif } = useSelector((store) => store.features);
+  const { isEditClicked, updateNotif, editId } = useSelector(
+    (store) => store.features
+  );
 
   useEffect(() => {
-    setStatus(noteStatus);
+    if (noteStatus) setStatus(noteStatus);
   }, [noteStatus]);
+
+  console.log(noteStatus, status);
 
   function handleStatus(e) {
     console.log(e.target.value);
@@ -177,7 +181,7 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
   }
 
   function handleEditClicked(prev) {
-    dispatch(toggleEditModal());
+    dispatch(toggleEditModal(id));
   }
 
   function handleCheckbox(e) {
@@ -185,8 +189,15 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
     setCheckbox(!checkbox);
   }
 
+  function handleDelete() {
+    dispatch(deleteNote(id));
+  }
+
   return (
-    <div className="render-todo">
+    <div
+      className={`render-todo ${status === "complete" ? "line-through" : ""}`}
+    >
+      {/* <div  className="render-todo"> */}
       <input type="checkbox" value={checkbox} onChange={handleCheckbox}></input>
       <p>{index + 1}</p>
       {/* correct hai delte below one */}
@@ -200,8 +211,10 @@ function RenderToDo({ index, id, taskName, noteStatus, edit, remove }) {
       <button value={isEditClicked} onClick={handleEditClicked}>
         {edit}
       </button>
-      <button>{remove}</button>
-      {isEditClicked && <EditModal uniqueId={id}></EditModal>}
+      <button onClick={handleDelete}>{remove}</button>
+      {/* {isEditClicked && <EditModal uniqueId={id}></EditModal>} */}
+      {editId === id && <EditModal uniqueId={id}></EditModal>}
+
       {/* {updateNotif && <UpdateNotification></UpdateNotification>} */}
     </div>
   );
