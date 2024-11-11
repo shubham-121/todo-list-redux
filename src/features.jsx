@@ -64,28 +64,28 @@ const featureSlice = createSlice({
     //   state.isEditClicked = !state.isEditClicked;
     // },
 
-    // editNote: {
-    //   prepare(editNotetext, editStatus, uniqueId) {
-    //     return {
-    //       payload: { editNotetext, editStatus, uniqueId },
-    //     };
-    //   },
-    //   reducer(state, action) {
-    //     console.log("Edit data reached", action.payload);
-    //     const { editNotetext, editStatus, uniqueId } = action.payload;
-    //     const noteToUpdate = state.notesArray.find(
-    //       (note) => note.id === uniqueId
-    //     );
-    //     if (noteToUpdate) console.log("Note found", uniqueId);
-    //     else alert("Problem in editing the note!");
+    editNote: {
+      prepare(editNotetext, editStatus, uniqueId) {
+        return {
+          payload: { editNotetext, editStatus, uniqueId },
+        };
+      },
+      reducer(state, action) {
+        console.log("Edit data reached", action.payload);
+        const { editNotetext, editStatus, uniqueId } = action.payload;
+        const noteToUpdate = state.notesArray.find(
+          (note) => note.id === uniqueId
+        );
+        if (noteToUpdate) console.log("Note found", uniqueId);
+        else alert("Problem in editing the note!");
 
-    //     noteToUpdate.taskName = editNotetext;
-    //     noteToUpdate.status = editStatus;
-    //     noteToUpdate.id = uniqueId;
+        noteToUpdate.taskName = editNotetext;
+        noteToUpdate.status = editStatus;
+        noteToUpdate.id = uniqueId;
 
-    //     console.log("Update successfully the note data");
-    //   },
-    // },
+        console.log("Update successfully the note data");
+      },
+    },
     toggleEditModal(state, action) {
       state.editId = action.payload;
     },

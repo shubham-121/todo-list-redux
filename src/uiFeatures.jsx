@@ -28,8 +28,26 @@ const UiSlice = createSlice({
       console.log("sorted Array", action.payload);
     },
     sortCompleted(state, action) {},
-    sortNewest(state, action) {},
-    sortOldest(state, action) {},
+
+    sortNewest(state, action) {
+      console.log("before sort newest:", action.payload);
+      //prettier-ignore
+      state.sortedNotes = [...action.payload].sort((a, b) => {
+        if (a.id < b.id) return 1;  {/*b will be ordered before a*/}
+        if (a.id > b.id) return -1; {/*a will be ordered before b*/}
+        if (a.id == b.id) return 0;
+      });
+      console.log("After sort newest:", action.payload);
+    },
+    sortOldest(state, action) {
+      console.log("before sort newest:", action.payload);
+      state.sortedNotes = [...action.payload].sort((a, b) => {
+        if (a.id < b.id) return -1;
+        if (a.id > b.id) return 1;
+        if (a.id == b.id) return 0;
+      });
+      console.log("After sort newest:", action.payload);
+    },
   },
 });
 

@@ -54,7 +54,7 @@ export default function App() {
 
 function Header() {
   const dispatch = useDispatch();
-  const { createNoteClick, notesArray } = useSelector(
+  const { createNoteClick, notesArray, id } = useSelector(
     (store) => store.features
   );
   const { isDark } = useSelector((store) => store.UI);
@@ -76,7 +76,7 @@ function Header() {
     const sort = e.target.value;
 
     if (sort === "sortAlphabetically") dispatch(sortAlphabetically(notesArray));
-    else if (sort === "sortCompleted") dispatch(sortCompleted(notesArray));
+    // else if (sort === "sortCompleted") dispatch(sortCompleted(notesArray));
     else if (sort === "sortNewest") dispatch(sortNewest(notesArray));
     else if (sort === "sortOldest") dispatch(sortOldest(notesArray));
   }
@@ -96,7 +96,7 @@ function Header() {
       <select defaultValue="sort" className="sort-btn" onChange={handleSort}>
         <option value="sort" disabled> Sort </option>
         <option value="sortAlphabetically">Alphabetically</option>
-        <option value="sortCompleted">Completed </option>
+        {/* <option value="sortCompleted">Completed </option> */}
         <option value="sortNewest">Newest </option>
         <option value="sortOldest">Oldest </option>
       </select>
